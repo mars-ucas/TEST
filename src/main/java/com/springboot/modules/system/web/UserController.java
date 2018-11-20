@@ -27,7 +27,7 @@ import java.util.Arrays;
 /**
  * 
  * @Description： 用户管理
- * @author [ Wenfeng.Huang ] on [2018年8月24日下午5:30:44]
+ * @author [ xl ] on [2018年11月7日下午5:30:44]
  * @Modified By： [修改人] on [修改日期] for [修改说明]
  *
  */

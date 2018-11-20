@@ -20,7 +20,7 @@ import javax.validation.Valid;
 /**
  * 
  * @Description： 资源管理
- * @author [ Wenfeng.Huang ] on [2018年8月24日下午5:30:57]
+ * @author [ xl ] on [2018年11月7日下午5:30:57]
  * @Modified By： [修改人] on [修改日期] for [修改说明]
  *
  */
