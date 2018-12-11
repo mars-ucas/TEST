@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<style>
+    ul.ztree {
+        border: 1px solid #ccc;
+        background-color: #fff;
+        height: 200px;
+        overflow-y: scroll;
+        overflow-x: auto;
+    }
+</style>
+<!-- 标题头界面 -->
+<!-- Content Header (Page header) -->
+<section class="content-header" style="">
+    <h1>
+        委托单管理
+        <small> 委托单管理页面</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        <li><a href="#">订单管理</a></li>
+        <li class="active">委托单管理</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div id="toolbar">
+                        <form class="form-inline" id="searchForm">
+                            <div class="form-group">
+                                <label for="searchReportNum">订单编号</label>
+                                <input type="text" class="form-control input-sm" name="reportNum" id="searchReportNum" placeholder="请输入报告编号名称">
+                                <!-- 暂时注释，留着后用
+                                <label for="searchDescription">角色描述</label>
+                                <input type="text" class="form-control input-sm" name="description" id="searchDescription" placeholder="请输入角色描述">
+                                -->
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm" onclick="javascript:$('table').bootstrapTable('refresh', {silent: true});">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                                                                                            查询
+                                </button>
+                                <button type="reset" class="btn btn-default btn-sm">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                                                                                            清空
+                                </button>
+                            </div>
+                        </form>
+                        <div class="btn-group btn-group-sm">
+                            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+                            <!--
+                            <button shiro:hasPermission="order:create" type="button" id="addBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#addModal" data-action="{before:'addBefore'}"><i class="glyphicon glyphicon glyphicon-plus"></i> 新增
+                            </button>
+                            -->
+                            <button type="button" id="addBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#addModal" data-action="{before:'addBefore'}"><i class="glyphicon glyphicon glyphicon-plus"></i> 新增
+                            </button>
+                            <!-- Indicates caution should be taken with this action -->
+                            <!--  
+                            <button shiro:hasPermission="order:update" type="button" id="editBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#editModal"
+                                    data-action="{type:'editable',form:'#editForm',table:'#table',after:'editAfter'}"
+                                    disabled><i class="glyphicon glyphicon glyphicon-edit"></i> 修改
+                            </button>
+                            -->
+                            <button type="button" id="editBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#editModal"
+                                    data-action="{type:'editable',form:'#editForm',table:'#table',after:'editAfter'}"
+                                    disabled><i class="glyphicon glyphicon glyphicon-edit"></i> 修改
+                            </button>
+                            <!-- Indicates a dangerous or potentially negative action -->
+                            <!-- 
+                            <button shiro:hasPermission="order:delete" type="button" id="deleteBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-action="{type:'delete',form:'#deleteForm',idField:'id',table:'#table'}" disabled><i
+                                    class="glyphicon glyphicon-remove"></i> 删除
+                            </button>
+                            -->
+                            <button type="button" id="deleteBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-action="{type:'delete',form:'#deleteForm',idField:'id',table:'#table'}" disabled><i
+                                    class="glyphicon glyphicon-remove"></i> 删除
+                            </button>
+                        </div>
+                    </div>
+                    <table id="table"></table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+
+<!-- 新增订单 -->
+<!-- add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="addModalLabel">新增订单</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <!--  原表单内容
+                    <div class="form-group">
+                        <label class="control-label" for="role"><span class="asterisk">*</span>角色名:</label>
+                        <input id="role" type="text" class="form-control" name="role" placeholder="输入角色名" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="description">角色描述:</label>
+                        <input id="description" type="text" class="form-control" name="description" placeholder="输入角色描述">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="resourceIds"><span class="asterisk">*</span>拥有的资源列表:</label>
+                        <input type="hidden" id="resourceIds" name="resourceIds" required>
+                        <input type="text" class="form-control" id="resourceName" name="resourceNames" readonly required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    -->
+                    <div class="form-group">
+                        <label class="control-label" for="reportNum"><span class="asterisk">*</span>订单编号:</label>
+                        <input id="reportNum" type="text" class="form-control" name="reportNum" placeholder="输入订单编号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="applicantName"><span class="asterisk">*</span>委托单位:</label>
+                        <input id="applicantName" type="text" class="form-control" name="applicantName" placeholder="输入委托单位名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="clientName"><span class="asterisk">*</span>委托人名称:</label>
+                        <input id="clientName" type="text" class="form-control" name="clientName" placeholder="输入委托人名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testKind"><span class="asterisk">*</span>检测类别:</label>
+                        <input id="testKind" type="text" class="form-control" name="testKind" placeholder="输入检测类别" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="productionUnitName"><span class="asterisk">*</span>生产单位名称:</label>
+                        <input id="productionUnitName" type="text" class="form-control" name="productionUnitName" placeholder="输入生产单位名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="postCode"><span class="asterisk">*</span>邮政编码:</label>
+                        <input id="postCode" type="text" class="form-control" name="postCode" placeholder="输入邮政编码" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="applicantAddress"><span class="asterisk">*</span>委托单位详细地址:</label>
+                        <input id="applicantAddress" type="text" class="form-control" name="applicantAddress" placeholder="输入委托单位详细地址" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="contactNum"><span class="asterisk">*</span>联系电话:</label>
+                        <input id="contactNum" type="text" class="form-control" name="contactNum" placeholder="输入联系电话" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleName"><span class="asterisk">*</span>样品名称:</label>
+                        <input id="sampleName" type="text" class="form-control" name="sampleName" placeholder="输入样品名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="brand"><span class="asterisk">*</span>商标:</label>
+                        <input id="brand" type="text" class="form-control" name="brand" placeholder="输入商标" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="specType"><span class="asterisk">*</span>规格型号:</label>
+                        <input id="specType" type="text" class="form-control" name="specType" placeholder="输入规格型号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleState"><span class="asterisk">*</span>样品状态:</label>
+                        <input id="sampleState" type="text" class="form-control" name="sampleState" placeholder="输入样品状态" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleCount"><span class="asterisk">*</span>样品数量:</label>
+                        <input id="sampleCount" type="text" class="form-control" name="sampleCount" placeholder="输入样品数量" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="receivedDate"><span class="asterisk">*</span>接样日期:</label>
+                        <input id="receivedDate" type="text" class="form-control" name="receivedDate" placeholder="输入接样日期" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleIdentifier"><span class="asterisk">*</span>样品编号:</label>
+                        <input id="sampleIdentifier" type="text" class="form-control" name="sampleIdentifier" placeholder="输入样品编号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleKeepCondition"><span class="asterisk">*</span>样品保存条件:</label>
+                        <input id="sampleKeepCondition" type="text" class="form-control" name="sampleKeepCondition" placeholder="输入样品保存条件" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleKeepConditionState"><span class="asterisk">*</span>样品保存条件是否需要保密:</label>
+                        <input id="sampleKeepConditionState" type="text" class="form-control" name="sampleKeepConditionState" placeholder="样品保存条件是否需要保密" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="materialNameCount"><span class="asterisk">*</span>资料名称及数量 :</label>
+                        <input id="materialNameCount" type="text" class="form-control" name="materialNameCount" placeholder="输入资料名称及数量" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="materialNameCountState"><span class="asterisk">*</span>资料名称及数量是否需要保密 :</label>
+                        <input id="materialNameCountState" type="text" class="form-control" name="materialNameCountState" placeholder="输入资料名称及数量是否需要保密" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testRequirement"><span class="asterisk">*</span>检测要求:</label>
+                        <input id="testRequirement" type="text" class="form-control" name="testRequirement" placeholder="输入检测要求" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testAccording"><span class="asterisk">*</span>检测依据:</label>
+                        <input id="testAccording" type="text" class="form-control" name="testAccording" placeholder="输入检测依据 " minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testItem"><span class="asterisk">*</span>检测项目:</label>
+                        <input id="testItem" type="text" class="form-control" name="testItem" placeholder="输入检测项目" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="deliverMode"><span class="asterisk">*</span>报告交付方式:</label>
+                        <input id="deliverMode" type="text" class="form-control" name="deliverMode" placeholder="输入报告交付方式" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testReportCount"><span class="asterisk">*</span>报告份数:</label>
+                        <input id="testReportCount" type="text" class="form-control" name="testReportCount" placeholder="输入报告份数" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="deliverDate"><span class="asterisk">*</span>协议交付日期:</label>
+                        <input id="deliverDate" type="text" class="form-control" name="deliverDate" placeholder="输入协议交付日期" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleTreatment"><span class="asterisk">*</span>样品处理:</label>
+                        <input id="sampleTreatment" type="text" class="form-control" name="sampleTreatment" placeholder="输入样品处理" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="serviceCharge"><span class="asterisk">*</span>服务费:</label>
+                        <input id="serviceCharge" type="text" class="form-control" name="serviceCharge" placeholder="输入服务费" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="otherAgreedInstructions"><span class="asterisk">*</span>其他约定说明:</label>
+                        <input id="otherAgreedInstructions" type="text" class="form-control" name="otherAgreedInstructions" placeholder="输入其他约定说明" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="receiver"><span class="asterisk">*</span>受理人签章:</label>
+                        <input id="receiver" type="text" class="form-control" name="receiver" placeholder="输入受理人签章" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testDepartment"><span class="asterisk">*</span>检测部签章:</label>
+                        <input id="testDepartment" type="text" class="form-control" name="testDepartment" placeholder="输入检测部签章" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="authorizedRepresentative"><span class="asterisk">*</span>委托方授权代表签章:</label>
+                        <input id="authorizedRepresentative" type="text" class="form-control" name="authorizedRepresentative" placeholder="输入委托方授权代表签章" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="addForm" class="btn btn-primary"
+                        data-action="{type:'submit',form:'#addForm',url:'@{/order/create}',after:'$.myAction.refreshTable'}">
+                                                                        确定
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑订单 -->
+<!-- edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="editModalLabel">修改委托单</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" name="id"/>
+                    <!-- 原表格内容
+                    <div class="form-group">
+                        <label class="control-label" for="role"><span class="asterisk">*</span>角色名:</label>
+                        <input id="editRole" type="text" class="form-control" name="role" placeholder="输入角色名" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="description">角色描述:</label>
+                        <input id="editDescription" type="text" class="form-control" name="description" placeholder="输入角色描述">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="resourceIds"><span class="asterisk">*</span>拥有的资源列表:</label>
+                        <input type="hidden" id="editResourceIds" name="resourceIds" required>
+                        <input type="text" class="form-control" id="editResourceName" name="resourceNames" readonly required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    -->
+                    
+                    <div class="form-group">
+                        <label class="control-label" for="reportNum"><span class="asterisk">*</span>订单编号:</label>
+                        <input id="reportNum" type="text" class="form-control" name="reportNum" placeholder="输入订单编号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="applicantName"><span class="asterisk">*</span>委托单位:</label>
+                        <input id="applicantName" type="text" class="form-control" name="applicantName" placeholder="输入委托单位名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="clientName"><span class="asterisk">*</span>委托人名称:</label>
+                        <input id="clientName" type="text" class="form-control" name="clientName" placeholder="输入委托人名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testKind"><span class="asterisk">*</span>检测类别:</label>
+                        <input id="testKind" type="text" class="form-control" name="testKind" placeholder="输入检测类别" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="productionUnitName"><span class="asterisk">*</span>生产单位名称:</label>
+                        <input id="productionUnitName" type="text" class="form-control" name="productionUnitName" placeholder="输入生产单位名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="postCode"><span class="asterisk">*</span>邮政编码:</label>
+                        <input id="postCode" type="text" class="form-control" name="postCode" placeholder="输入邮政编码" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="applicantAddress"><span class="asterisk">*</span>委托单位详细地址:</label>
+                        <input id="applicantAddress" type="text" class="form-control" name="applicantAddress" placeholder="输入委托单位详细地址" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="contactNum"><span class="asterisk">*</span>联系电话:</label>
+                        <input id="contactNum" type="text" class="form-control" name="contactNum" placeholder="输入联系电话" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleName"><span class="asterisk">*</span>样品名称:</label>
+                        <input id="sampleName" type="text" class="form-control" name="sampleName" placeholder="输入样品名称" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="brand"><span class="asterisk">*</span>商标:</label>
+                        <input id="brand" type="text" class="form-control" name="brand" placeholder="输入商标" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="specType"><span class="asterisk">*</span>规格型号:</label>
+                        <input id="specType" type="text" class="form-control" name="specType" placeholder="输入规格型号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleState"><span class="asterisk">*</span>样品状态:</label>
+                        <input id="sampleState" type="text" class="form-control" name="sampleState" placeholder="输入样品状态" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleCount"><span class="asterisk">*</span>样品数量:</label>
+                        <input id="sampleCount" type="text" class="form-control" name="sampleCount" placeholder="输入样品数量" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="receivedDate"><span class="asterisk">*</span>接样日期:</label>
+                        <input id="receivedDate" type="text" class="form-control" name="receivedDate" placeholder="输入接样日期" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleIdentifier"><span class="asterisk">*</span>样品编号:</label>
+                        <input id="sampleIdentifier" type="text" class="form-control" name="sampleIdentifier" placeholder="输入样品编号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleKeepCondition"><span class="asterisk">*</span>样品保存条件:</label>
+                        <input id="sampleKeepCondition" type="text" class="form-control" name="sampleKeepCondition" placeholder="输入样品保存条件" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleKeepConditionState"><span class="asterisk">*</span>样品保存条件是否需要保密:</label>
+                        <input id="sampleKeepConditionState" type="text" class="form-control" name="sampleKeepConditionState" placeholder="样品保存条件是否需要保密" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="materialNameCount"><span class="asterisk">*</span>资料名称及数量 :</label>
+                        <input id="materialNameCount" type="text" class="form-control" name="materialNameCount" placeholder="输入资料名称及数量" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="materialNameCountState"><span class="asterisk">*</span>资料名称及数量是否需要保密 :</label>
+                        <input id="materialNameCountState" type="text" class="form-control" name="materialNameCountState" placeholder="输入资料名称及数量是否需要保密" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testRequirement"><span class="asterisk">*</span>检测要求:</label>
+                        <input id="testRequirement" type="text" class="form-control" name="testRequirement" placeholder="输入检测要求" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testAccording"><span class="asterisk">*</span>检测依据:</label>
+                        <input id="testAccording" type="text" class="form-control" name="testAccording" placeholder="输入检测依据 " minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testItem"><span class="asterisk">*</span>检测项目:</label>
+                        <input id="testItem" type="text" class="form-control" name="testItem" placeholder="输入检测项目" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="deliverMode"><span class="asterisk">*</span>报告交付方式:</label>
+                        <input id="deliverMode" type="text" class="form-control" name="deliverMode" placeholder="输入报告交付方式" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testReportCount"><span class="asterisk">*</span>报告份数:</label>
+                        <input id="testReportCount" type="text" class="form-control" name="testReportCount" placeholder="输入报告份数" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="deliverDate"><span class="asterisk">*</span>协议交付日期:</label>
+                        <input id="deliverDate" type="text" class="form-control" name="deliverDate" placeholder="输入协议交付日期" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="sampleTreatment"><span class="asterisk">*</span>样品处理:</label>
+                        <input id="sampleTreatment" type="text" class="form-control" name="sampleTreatment" placeholder="输入样品处理" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="serviceCharge"><span class="asterisk">*</span>服务费:</label>
+                        <input id="serviceCharge" type="text" class="form-control" name="serviceCharge" placeholder="输入服务费" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="otherAgreedInstructions"><span class="asterisk">*</span>其他约定说明:</label>
+                        <input id="otherAgreedInstructions" type="text" class="form-control" name="otherAgreedInstructions" placeholder="输入其他约定说明" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="receiver"><span class="asterisk">*</span>受理人签章:</label>
+                        <input id="receiver" type="text" class="form-control" name="receiver" placeholder="输入受理人签章" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="testDepartment"><span class="asterisk">*</span>检测部签章:</label>
+                        <input id="testDepartment" type="text" class="form-control" name="testDepartment" placeholder="输入检测部签章" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="authorizedRepresentative"><span class="asterisk">*</span>委托方授权代表签章:</label>
+                        <input id="authorizedRepresentative" type="text" class="form-control" name="authorizedRepresentative" placeholder="输入委托方授权代表签章" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="editForm" class="btn btn-primary"
+                        data-action="{type:'submit',form:'#editForm',url:'@{/order/update}',after:'$.myAction.refreshTable'}">
+                                                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除订单 -->
+<!-- delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteSmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="deleteSmallModalLabel">删除委托单</h4>
+            </div>
+            <div class="modal-body">
+                <form id="deleteForm"></form>
+                确定要删除选中的 <span class="records"></span> 条记录?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" form="deleteForm" class="btn btn-primary"
+                        data-action="{type:'submit',form:'#deleteForm',url:'@{/order/delete}',after:'$.myAction.refreshTable'}">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="actionButtons" class="admin-hide">
+    <a class="like" href="javascript:void(0)" data-toggle="tooltip" title="Like"><i class="glyphicon glyphicon-heart"></i></a>　
+    <a shiro:hasPermission="order:update" class="edit ml10" href="javascript:void(0)" data-toggle="tooltip" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>　
+    <a shiro:hasPermission="order:delete" class="remove ml10" href="javascript:void(0)" data-toggle="tooltip" title="删除"><i class="glyphicon glyphicon-remove"></i></a>　
+</div>
+<!-- zTree -->
+<div id="menuContent" class="menuContent" style="display:none;z-index:1989101600;position: absolute;">
+    <ul id="tree" class="ztree" style="margin-top:0;"></ul>
+</div>
+<script th:inline="javascript">
+
+    var $table = $('#table');
+
+    $(function () {
+        // bootstrap table初始化
+        // http://bootstrap-table.wenzhixin.net.cn/zh-cn/documentation/
+        $table.bootstrapTable({
+            url: CONTEXT_PATH + '/order/list',
+            idField: 'id',
+            searchOnEnterKey: false,
+            columns: [
+                {field: 'state', checkbox: true},
+                {field: 'id', title: '编号', sortable: true, halign: 'left'},
+                {field: 'reportNum', title: '订单编号', sortable: true, halign: 'left'},
+                {field: 'applicantName', title: '委托者名称', sortable: true, halign: 'left'},
+                {field: 'sampleName', title: '样品名称', sortable: true, halign: 'left'},
+                {
+                    field: 'action',
+                    title: '操作',
+                    halign: 'center',
+                    align: 'center',
+                    formatter: 'actionFormatter',
+                    events: 'actionEvents',
+                    clickToSelect: false
+                }
+            ]
+        });
+    });
+
+    // 数据表格展开内容
+    function detailFormatter(index, row) {
+        var html = [];
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+        });
+        return html.join('');
+    }
+
+    function addBefore(obj) {
+        $.fn.zTree.getZTreeObj("tree").destroy();
+        $.fn.zTree.init($("#tree"), setting, zNodes);
+    }
+
+    function editAfter(obj, row) {
+        var treeObj = $.fn.zTree.getZTreeObj("tree");
+        treeObj.destroy();
+        $.fn.zTree.init($("#tree"), setting, zNodes);
+        treeObj.expandAll(true);
+    }
+
+    function actionFormatter(value, row, index) {
+        return $('#actionButtons').html();
+    }
+
+    window.actionEvents = {
+        'click .like': function (e, value, row, index) {
+            alert('You click like icon, row: ' + JSON.stringify(row));
+            console.log(value, row, index);
+        },
+        'click .edit': function (e, value, row, index) {
+            $('#editModal').modal('show')
+            $('#editForm').fillForm(row);
+            console.log(value, row, index);
+        },
+        'click .remove': function (e, value, row, index) {
+            $('#deleteModal').modal('show');
+            $('.records').html('1');
+            var html = '';
+            for (var key in row) {
+                html += '<input type="hidden" name="' + key + '" value="' + row[key] + '">';
+            }
+            $('#deleteForm').html(html);
+        }
+    };
+
+    var setting = {
+        check: {
+            enable: true,
+            chkboxType: {"Y": "", "N": ""}
+        },
+        view: {
+            dblClickExpand: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onCheck: onCheck
+        }
+    };
+    var resourceList = [[${resourceList}]];
+    var zNodes = [];
+    for (var i in resourceList) {
+        zNodes.push({id: resourceList[i].id, pId: resourceList[i].parentId, name: resourceList[i].name});
+    }
+
+    function onCheck(e, treeId, treeNode) {
+        var zTree = $.fn.zTree.getZTreeObj("tree"),
+            nodes = zTree.getCheckedNodes(true),
+            id = "",
+            name = "";
+        nodes.sort(function compare(a, b) {
+            return a.id - b.id;
+        });
+        for (var i = 0, l = nodes.length; i < l; i++) {
+            id += nodes[i].id + ",";
+            name += nodes[i].name + ",";
+        }
+        if (id.length > 0) id = id.substring(0, id.length - 1);
+        if (name.length > 0) name = name.substring(0, name.length - 1);
+        $("#resourceIds").val(id);
+        $("#resourceName").val(name);
+        $("#editResourceIds").val(id);
+        $("#editResourceName").val(name);
+        // hideMenu();
+    }
+
+    function showMenu() {
+        var treeObj = $.fn.zTree.getZTreeObj("tree");
+        var cityObj = $("#resourceName");
+        var cityOffset = $("#resourceName").offset();
+        $("#menuContent").css({left: cityOffset.left + "px", top: cityOffset.top + cityObj.outerHeight()}).slideDown("fast");
+
+        $("body").bind("mousedown", onBodyDown);
+    }
+
+    function showMenuOfEdit() {
+        var resourceIds = $('#editResourceIds').val();
+        var resourceIdList = resourceIds.split(',');
+        var treeObj = $.fn.zTree.getZTreeObj("tree");
+        for (var i in resourceIdList) {
+            var id = resourceIdList[i];
+            var node = treeObj.getNodeByParam("id", id, null);
+            if (node === null) continue;
+            treeObj.checkNode(node, true, true);
+        }
+        var cityObj = $("#editResourceName");
+        var cityOffset = $("#editResourceName").offset();
+        $("#menuContent").css({left: cityOffset.left + "px", top: cityOffset.top + cityObj.outerHeight()}).slideDown("fast");
+
+        $("body").bind("mousedown", onBodyDown);
+    }
+
+    function hideMenu() {
+        $("#menuContent").fadeOut("fast");
+        $("body").unbind("mousedown", onBodyDown);
+    }
+
+    function onBodyDown(event) {
+        if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length > 0)) {
+            hideMenu();
+        }
+    }
+
+    $.fn.zTree.init($("#tree"), setting, zNodes);
+    $("#resourceName").click(showMenu);
+    $("#editResourceName").click(showMenuOfEdit);
+</script>
+</html>
