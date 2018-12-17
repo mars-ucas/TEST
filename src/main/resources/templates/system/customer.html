@@ -10,16 +10,17 @@
         overflow-x: auto;
     }
 </style>
+<!-- 标题头界面 -->
 <!-- Content Header (Page header) -->
 <section class="content-header" style="">
     <h1>
-        角色管理
-        <small>用户的角色管理页面</small>
+        客户管理
+        <small> 客户管理页面</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
-        <li><a href="#">用户管理</a></li>
-        <li class="active">角色管理</li>
+        <li><a href="#">订单管理</a></li>
+        <li class="active">客户管理</li>
     </ol>
 </section>
 
@@ -32,39 +33,64 @@
                     <div id="toolbar">
                         <form class="form-inline" id="searchForm">
                             <div class="form-group">
-                                <label for="searchRole">角色名称</label>
-                                <input type="text" class="form-control input-sm" name="role" id="searchRole" placeholder="请输入角色名称">
-                                <label for="searchDescription">角色描述</label>
-                                <input type="text" class="form-control input-sm" name="description" id="searchDescription" placeholder="请输入角色描述">
+                                <label for="searchCustomerName">客户名</label>
+                                <input type="text" class="form-control input-sm" name="customerName" id="searchCustomerName" placeholder="请输入客户名">
+                                <!-- 
+                                <label for="searchDescription">订单编号</label>
+                                <input type="text" class="form-control input-sm" name="reportNum" id="searchReportNum" placeholder="请输入订单编号">
+                                 -->
                             </div>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-sm" onclick="javascript:$('table').bootstrapTable('refresh', {silent: true});">
                                     <i class="glyphicon glyphicon-search"></i>
-                                    查询
+                                                                                                            查询
                                 </button>
                                 <button type="reset" class="btn btn-default btn-sm">
                                     <i class="glyphicon glyphicon-trash"></i>
-                                    清空
+                                                                                                            清空
                                 </button>
                             </div>
                         </form>
                         <div class="btn-group btn-group-sm">
                             <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-                            <button shiro:hasPermission="role:create" type="button" id="addBtn" class="btn btn-default" data-toggle="modal"
+                            <!--
+                            <button shiro:hasPermission="order:create" type="button" id="addBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#addModal" data-action="{before:'addBefore'}"><i class="glyphicon glyphicon glyphicon-plus"></i> 新增
+                            </button>
+                            -->
+                            <button type="button" id="addBtn" class="btn btn-default" data-toggle="modal"
                                     data-target="#addModal" data-action="{before:'addBefore'}"><i class="glyphicon glyphicon glyphicon-plus"></i> 新增
                             </button>
                             <!-- Indicates caution should be taken with this action -->
-                            <button shiro:hasPermission="role:update" type="button" id="editBtn" class="btn btn-default" data-toggle="modal"
+                            <!--  
+                            <button shiro:hasPermission="order:update" type="button" id="editBtn" class="btn btn-default" data-toggle="modal"
                                     data-target="#editModal"
                                     data-action="{type:'editable',form:'#editForm',table:'#table',after:'editAfter'}"
                                     disabled><i class="glyphicon glyphicon glyphicon-edit"></i> 修改
                             </button>
+                            -->
+                            <!-- 
+                            <button type="button" id="editBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#editModal"
+                                    data-action="{type:'editable',form:'#editForm',table:'#table',after:'editAfter'}"
+                                    disabled><i class="glyphicon glyphicon glyphicon-edit"></i> 修改
+                            </button>
+                             -->
                             <!-- Indicates a dangerous or potentially negative action -->
-                            <button shiro:hasPermission="role:delete" type="button" id="deleteBtn" class="btn btn-default" data-toggle="modal"
+                            <!-- 
+                            <button shiro:hasPermission="order:delete" type="button" id="deleteBtn" class="btn btn-default" data-toggle="modal"
                                     data-target="#deleteModal"
                                     data-action="{type:'delete',form:'#deleteForm',idField:'id',table:'#table'}" disabled><i
                                     class="glyphicon glyphicon-remove"></i> 删除
                             </button>
+                            -->
+                            <!-- 
+                            <button type="button" id="deleteBtn" class="btn btn-default" data-toggle="modal"
+                                    data-target="#deleteModal"
+                                    data-action="{type:'delete',form:'#deleteForm',idField:'id',table:'#table'}" disabled><i
+                                    class="glyphicon glyphicon-remove"></i> 删除
+                            </button>
+                             -->
                         </div>
                     </div>
                     <table id="table"></table>
@@ -80,6 +106,7 @@
 </section>
 <!-- /.content -->
 
+<!-- 新增客户 -->
 <!-- add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
     <div class="modal-dialog" role="document">
@@ -87,24 +114,38 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="addModalLabel">添加角色</h4>
+                <h4 class="modal-title" id="addModalLabel">新增客户</h4>
             </div>
             <div class="modal-body">
                 <form id="addForm">
                     <div class="form-group">
-                        <label class="control-label" for="role"><span class="asterisk">*</span>角色名:</label>
-                        <input id="role" type="text" class="form-control" name="role" placeholder="输入角色名" minlength="2" required>
+                        <label class="control-label" for="name"><span class="asterisk">*</span>客户姓名:</label>
+                        <input id="name" type="text" class="form-control" name="name" placeholder="输入客户姓名" minlength="2" required>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="description">角色描述:</label>
-                        <input id="description" type="text" class="form-control" name="description" placeholder="输入角色描述">
+                        <label class="control-label" for="tel"><span class="asterisk">*</span>座机号码:</label>
+                        <input id="tel" type="text" class="form-control" name="tel" placeholder="输入座机号码" minlength="2" required>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="resourceIds"><span class="asterisk">*</span>拥有的资源列表:</label>
-                        <input type="hidden" id="resourceIds" name="resourceIds" required>
-                        <input type="text" class="form-control" id="resourceName" name="resourceNames" readonly required>
+                        <label class="control-label" for="mobileTel"><span class="asterisk">*</span>移动电话:</label>
+                        <input id="mobileTel" type="text" class="form-control" name="mobileTel" placeholder="输入移动电话" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="unit"><span class="asterisk">*</span>单位:</label>
+                        <input id="unit" type="text" class="form-control" name="unit" placeholder="输入单位" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="address"><span class="asterisk">*</span>地址:</label>
+                        <input id="address" type="text" class="form-control" name="address" placeholder="输入地址" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="reportNums"><span class="asterisk">*</span>报告编号:</label>
+                        <input id="reportNums" type="text" class="form-control" name="reportNums" placeholder="输入报告编号" minlength="2" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </form>
@@ -112,13 +153,15 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="submit" form="addForm" class="btn btn-primary"
-                        data-action="{type:'submit',form:'#addForm',url:'@{/role/create}',after:'$.myAction.refreshTable'}">
-                    确定
+                        data-action="{type:'submit',form:'#addForm',url:'@{/customer/create}',after:'$.myAction.refreshTable'}">
+                                                                        确定
                 </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- 编辑客户 -->
 <!-- edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
     <div class="modal-dialog" role="document">
@@ -126,11 +169,12 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="editModalLabel">修改角色</h4>
+                <h4 class="modal-title" id="editModalLabel">修改客户信息</h4>
             </div>
             <div class="modal-body">
                 <form id="editForm">
                     <input type="hidden" name="id"/>
+                    <!-- 原表格内容
                     <div class="form-group">
                         <label class="control-label" for="role"><span class="asterisk">*</span>角色名:</label>
                         <input id="editRole" type="text" class="form-control" name="role" placeholder="输入角色名" minlength="2" required>
@@ -147,25 +191,58 @@
                         <input type="text" class="form-control" id="editResourceName" name="resourceNames" readonly required>
                         <div class="help-block with-errors"></div>
                     </div>
+                    -->
+                    
+                    <div class="form-group">
+                        <label class="control-label" for="name"><span class="asterisk">*</span>客户姓名:</label>
+                        <input id="name" type="text" class="form-control" name="name" placeholder="输入客户姓名" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="tel"><span class="asterisk">*</span>座机号码:</label>
+                        <input id="tel" type="text" class="form-control" name="tel" placeholder="输入座机号码" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="mobileTel"><span class="asterisk">*</span>移动电话:</label>
+                        <input id="mobileTel" type="text" class="form-control" name="mobileTel" placeholder="输入移动电话" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="unit"><span class="asterisk">*</span>单位:</label>
+                        <input id="unit" type="text" class="form-control" name="unit" placeholder="输入单位" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="address"><span class="asterisk">*</span>地址:</label>
+                        <input id="address" type="text" class="form-control" name="address" placeholder="输入地址" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="reportNums"><span class="asterisk">*</span>报告编号:</label>
+                        <input id="reportNums" type="text" class="form-control" name="reportNums" placeholder="输入报告编号" minlength="2" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="submit" form="editForm" class="btn btn-primary"
-                        data-action="{type:'submit',form:'#editForm',url:'@{/role/update}',after:'$.myAction.refreshTable'}">
-                                                确定
+                        data-action="{type:'submit',form:'#editForm',url:'@{/customer/update}',after:'$.myAction.refreshTable'}">
+                                                    确定
                 </button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- 删除客户 -->
 <!-- delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteSmallModalLabel">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="deleteSmallModalLabel">删除角色</h4>
+                <h4 class="modal-title" id="deleteSmallModalLabel">删除客户</h4>
             </div>
             <div class="modal-body">
                 <form id="deleteForm"></form>
@@ -174,7 +251,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" form="deleteForm" class="btn btn-primary"
-                        data-action="{type:'submit',form:'#deleteForm',url:'@{/role/delete}',after:'$.myAction.refreshTable'}">
+                        data-action="{type:'submit',form:'#deleteForm',url:'@{/customer/delete}',after:'$.myAction.refreshTable'}">
                     确定
                 </button>
             </div>
@@ -183,8 +260,8 @@
 </div>
 <div id="actionButtons" class="admin-hide">
     <a class="like" href="javascript:void(0)" data-toggle="tooltip" title="Like"><i class="glyphicon glyphicon-heart"></i></a>　
-    <a shiro:hasPermission="role:update" class="edit ml10" href="javascript:void(0)" data-toggle="tooltip" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>　
-    <a shiro:hasPermission="role:delete" class="remove ml10" href="javascript:void(0)" data-toggle="tooltip" title="删除"><i class="glyphicon glyphicon-remove"></i></a>　
+    <a shiro:hasPermission="customer:update" class="edit ml10" href="javascript:void(0)" data-toggle="tooltip" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>　
+    <a shiro:hasPermission="customer:delete" class="remove ml10" href="javascript:void(0)" data-toggle="tooltip" title="删除"><i class="glyphicon glyphicon-remove"></i></a>　
 </div>
 <!-- zTree -->
 <div id="menuContent" class="menuContent" style="display:none;z-index:1989101600;position: absolute;">
@@ -198,15 +275,17 @@
         // bootstrap table初始化
         // http://bootstrap-table.wenzhixin.net.cn/zh-cn/documentation/
         $table.bootstrapTable({
-            url: CONTEXT_PATH + '/role/list',
+            url: CONTEXT_PATH + '/customer/list',
             idField: 'id',
             searchOnEnterKey: false,
             columns: [
                 {field: 'state', checkbox: true},
                 {field: 'id', title: '编号', sortable: true, halign: 'left'},
-                {field: 'role', title: '角色名称', sortable: true, halign: 'left'},
-                {field: 'description', title: '角色描述', sortable: true, halign: 'left'},
-                {field: 'resourceNames', title: '拥有的资源', sortable: true, halign: 'left'},
+                {field: 'name', title: '客户名', sortable: true, halign: 'left'},
+                {field: 'mobileTel', title: '联系方式', sortable: true, halign: 'left'},
+                {field: 'unit', title: '工作单位', sortable: true, halign: 'left'},
+                {field: 'address', title: '地址', sortable: true, halign: 'left'},
+                {field: 'reportNums', title: '订单编号', sortable: true, halign: 'left'},
                 {
                     field: 'action',
                     title: '操作',
